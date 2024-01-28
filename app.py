@@ -2,6 +2,7 @@
 from flask import Flask
 from flask_restful import Api, Resource
 from controllers.user.user import user_blueprint, User
+from controllers.user.userrole import userrole_blueprint, UserRole
 from connection import create_connection
 
 app = Flask(__name__)
@@ -10,16 +11,22 @@ api = Api(app)
 # Create a connection when the app starts
 connection = create_connection()
 
-# Register the user blueprint
+# Register the user and user role blueprints
 app.register_blueprint(user_blueprint, url_prefix='/user')
+app.register_blueprint(userrole_blueprint, url_prefix='/userrole')
 
-# Define a simple API resource
+# Define API resources
 class UserDataResource(Resource):
     def get(self):
         return User.get_user_data()
 
-# Add the API resource to the API with a specific route
+class UserRoleResource(Resource):
+    def get(self):
+        return UserRole.get_user_roles()
+
+# Add the API resources to the API with specific routes
 api.add_resource(UserDataResource, '/api/user/data')
+api.add_resource(UserRoleResource, '/api/user/roles')
 
 if __name__ == '__main__':
     app.run(debug=True)
