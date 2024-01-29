@@ -68,3 +68,67 @@ class User:
         else:
             # Return an error response if the connection is not established
             return {"error": "Internal Server Error"}, 500
+    
+    @staticmethod
+    def update_user(self):
+        connection = create_connection()
+
+        if connection:
+            try:
+                user_data = request.json
+                id = user_data.get('Id')
+                user_id = user_data.get('UserId')
+                email = user_data.get('Email')
+                user_name = user_data.get('UserName')
+                user_manager = user_data.get('UserManager')
+                is_active = user_data.get('is_active')
+                is_new = user_data.get('is_new')
+
+                cursor = connection.cursor()
+                
+                # Corrected SQL update statement
+                cursor.execute("""UPDATE tblUsers
+                                  SET UserId=?, Email=?, UserName=?, UserManager=?, is_active=?, is_new=?
+                                  WHERE Id=?""", user_id, email, user_name, user_manager, is_active, is_new, id)
+
+
+                connection.commit()
+
+                return {"message": "User updated successfully"}, 200
+            except Exception as e:
+                print(f"Error executing SQL query: {str(e)}")
+                return {"error": "Internal Server Error"}, 500
+            finally:
+                cursor.close()
+                connection.close()
+        else:
+            return {"error": "Internal Server Error"}, 500
+
+
+    @staticmethod
+    def delete_user(id):
+        connection = create_connection()
+
+        if connection:
+            try:
+                cursor = connection.cursor()
+
+                # Use proper parameter placeholder (e.g., ?, %s) based on your database driver
+                cursor.execute("""
+                    DELETE FROM tblUsers
+                    WHERE Id=?
+                """, id)
+
+                # No need to explicitly commit for DELETE operations
+
+                return {"message": "User deleted successfully"}, 200
+            except Exception as e:
+                # Handle query errors
+                print(f"Error executing SQL query: {str(e)}")
+                return {"error": "Internal Server Error"}, 500
+            finally:
+                cursor.close()
+                connection.close()
+        else:
+            # Return an error response if the connection is not established
+            return {"error": "Internal Server Error"}, 500

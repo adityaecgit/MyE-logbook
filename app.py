@@ -29,11 +29,26 @@ class CreateUserResource(Resource):
     def post(self):
         return User.create_user()
     
+class UpdateUserResource(Resource):
+    def put(self, id):
+        return User.update_user(id)
+    
+class DeleteUserResource(Resource):
+    def delete(self, id):
+        return User.delete_user(id)
+
+    
 # Add the API resources to the API with specific routes
 api.add_resource(UserDataResource, '/api/user/data')
 api.add_resource(UserRoleResource, '/api/user/roles')
 api.add_resource(CreateUserResource, '/api/user/create')
+api.add_resource(UpdateUserResource, '/api/user/update/<int:id>')
+api.add_resource(DeleteUserResource, '/api/user/delete/<int:id>')
 
 
-if __name__ == '__main__':
+
+
+
+if __name__ == '__main__':         
     app.run(debug=True)
+
