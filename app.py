@@ -15,6 +15,7 @@ connection = create_connection()
 app.register_blueprint(user_blueprint, url_prefix='/user')
 app.register_blueprint(userrole_blueprint, url_prefix='/userrole')
 
+
 # Define API resources
 class UserDataResource(Resource):
     def get(self):
@@ -24,9 +25,15 @@ class UserRoleResource(Resource):
     def get(self):
         return UserRole.get_user_roles()
 
+class CreateUserResource(Resource):
+    def post(self):
+        return User.create_user()
+    
 # Add the API resources to the API with specific routes
 api.add_resource(UserDataResource, '/api/user/data')
 api.add_resource(UserRoleResource, '/api/user/roles')
+api.add_resource(CreateUserResource, '/api/user/create')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
