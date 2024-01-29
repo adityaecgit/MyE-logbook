@@ -2,32 +2,19 @@ import configparser
 import pyodbc
 
 def create_connection():
-    # Replace these with your SQL Server credentials
-    server = 'ECGIT2023001212\SQLEXPRESS'
-    database = 'elogbook_dev1'
-    username = 'ECGIT2023001212\\user'
-    password = ''
-    driver = 'SQL Server'
+    # Read the existing configuration from the config.ini file
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+
+    # Get SQL Server credentials from the configuration
+    server = config.get('SQLServer', 'server')
+    database = config.get('SQLServer', 'database')
+    username = config.get('SQLServer', 'username')
+    password = config.get('SQLServer', 'password')
+    driver = config.get('SQLServer', 'driver')
 
     # Create a connection string
-    conn_str = f'DRIVER={driver};SERVER={server};DATABASE={database};Trusted_Connection=yes;'
-
-    # Create a ConfigParser object
-    config = configparser.ConfigParser()
-
-    # Add a section named 'SQLServer' to the config object
-    config.add_section('SQLServer')
-
-    # Set the options in the 'SQLServer' section
-    config.set('SQLServer', 'server', server)
-    config.set('SQLServer', 'database', database)
-    config.set('SQLServer', 'username', username)
-    config.set('SQLServer', 'password', password)
-    config.set('SQLServer', 'driver', driver)
-
-    # Write the config object to a file
-    with open('config.ini', 'w') as configfile:
-        config.write(configfile)
+    conn_str = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password};Trusted_Connection=yes;'
 
     try:
         # Attempt to establish a connection
@@ -37,3 +24,10 @@ def create_connection():
         # Handle connection errors
         print(f"Error connecting to SQL Server: {str(e)}")
         return None
+
+# Example usage
+connection = create_connection()
+if connection:
+    print("Connection successful.")
+    # Perform operations with the connection
+    # Don't forget to close the connection when done: connection.close()
