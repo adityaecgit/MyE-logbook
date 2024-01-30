@@ -75,7 +75,7 @@ class User:
 
         if connection:
             try:
-                update_data = request.json()
+                update_data = request.json
                 # Example: Execute a SQL query to update user data
                 cursor = connection.cursor()
                 update_query = """
@@ -111,7 +111,6 @@ class User:
                 print(f"Error executing SQL query: {str(e)}")
                 return {"error": "Internal Server Error"}, 500
             finally:
-                cursor.close()
                 connection.close()
         else:
             # Return an error response if the connection is not established
