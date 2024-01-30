@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask
+from flask import Flask,request
 from flask_restful import Api, Resource
 from controllers.user.user import user_blueprint, User
 from controllers.user.userrole import userrole_blueprint, UserRole
@@ -30,7 +30,7 @@ class CreateUserResource(Resource):
         return User.create_user()
     
 class UpdateUserResource(Resource):
-    def put(self, id):
+    def put(id):
         return User.update_user(id)
     
 class DeleteUserResource(Resource):
@@ -42,7 +42,7 @@ class DeleteUserResource(Resource):
 api.add_resource(UserDataResource, '/api/user/data')
 api.add_resource(UserRoleResource, '/api/user/roles')
 api.add_resource(CreateUserResource, '/api/user/create')
-api.add_resource(UpdateUserResource, '/api/user/update/<int:id>')
+api.add_resource(UpdateUserResource, '/api/user/update/<int:Id>')
 api.add_resource(DeleteUserResource, '/api/user/delete/<int:id>')
 
 
