@@ -1,7 +1,7 @@
 # controller/user/user.py
 import configparser
 from tokenize import generate_tokens
-from flask import Blueprint, jsonify, make_response,request
+from flask import jsonify, make_response,request
 from flask_restful import Resource
 from connection import create_connection
 from datetime import datetime,timedelta

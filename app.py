@@ -4,6 +4,7 @@ from flask import Flask,request,jsonify
 from flask_restful import Api, Resource
 from controllers.user.user import *
 from controllers.user.userrole import *
+from controllers.Shift_incharge.Log_Ebook.Parameters import *
 from connection import create_connection
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -40,7 +41,7 @@ api.add_resource(User,
 api.add_resource(Role,
                  "/roles/<int:id>", "/roles")
 api.add_resource(Login, "/users/login")
-
+api.add_resource(Parameters,"/parameter")
 
 if __name__ == '__main__':         
     app.run(debug=True)
