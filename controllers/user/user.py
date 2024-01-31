@@ -1,12 +1,18 @@
 # controller/user/user.py
-from flask import Blueprint, jsonify,request
+import configparser
+from tokenize import generate_tokens
+from flask import Blueprint, jsonify, make_response,request
+from flask_restful import Resource
 from connection import create_connection
+from datetime import datetime,timedelta
+from flask_jwt_extended import create_access_token
 
-user_blueprint = Blueprint('user', __name__)
+# Resource to get all users from the database
+config = configparser.ConfigParser()
+config.read('config.ini')
 
-class User:
-    @staticmethod
-    def get_user_data():
+class User(Resource):
+    def get(self):
         connection = create_connection()
 
         if connection:
@@ -30,7 +36,7 @@ class User:
             # Return an error response if the connection is not established
             return jsonify({"error": "Internal Server Error"}), 500
 
-    def create_user():
+    def post(self):
         connection = create_connection()
 
         if connection:
@@ -70,7 +76,7 @@ class User:
             return {"error": "Internal Server Error"}, 500
     
     
-    def update_user(id):
+    def put(self,id):
         connection = create_connection()
 
         if connection:
@@ -116,8 +122,7 @@ class User:
             # Return an error response if the connection is not established
             return {"error": "Internal Server Error"}, 500
 
-    @staticmethod
-    def delete_user(id):
+    def delete(self,id):
         connection = create_connection()
 
         if connection:
@@ -145,3 +150,39 @@ class User:
         else:
             # Return an error response if the connection is not established
             return {"error": "Internal Server Error"}, 500
+
+class Login(Resource):
+    def post(self):
+        connection = create_connection()
+
+        if connection:
+            try:
+                # Get credentials from the request
+                login_data = request.json
+                email = login_data.get('Email')
+                password = "123456789"  # Retrieve the password field
+
+                # Example: Execute a SQL query to authenticate the user
+                cursor = connection.cursor()
+                cursor.execute("SELECT UserId FROM tblUsers WHERE Email = ?", (email))
+                user_id = cursor.fetchone()
+
+                if user_id:
+                    user = user_id[0]
+
+                    # Generate a JWT token
+                    jwt_token = create_access_token(identity=user)
+                    response = make_response(jsonify({"token": jwt_token}), 200)
+                    return response
+                else:
+                    return jsonify({"error": "Invalid credentials"}), 401
+            except Exception as e:
+                # Handle query errors
+                print(f"Error executing SQL query: {str(e)}")
+                return jsonify({"error": "Internal Server Error"}), 500
+            finally:
+                cursor.close()
+                connection.close()
+        else:
+            # Return an error response if the connection is not established
+            return jsonify({"error": "Internal Server Error"}), 500

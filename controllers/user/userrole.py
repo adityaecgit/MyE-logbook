@@ -1,12 +1,10 @@
 # controller/user/userrole.py
-from flask import Blueprint, jsonify
+from flask import jsonify
+from flask_restful import Resource
 from connection import create_connection
 
-userrole_blueprint = Blueprint('userrole', __name__)
-
-class UserRole:
-    @staticmethod
-    def get_user_roles():
+class Role(Resource):
+    def get(self):
         connection = create_connection()
 
         if connection:
